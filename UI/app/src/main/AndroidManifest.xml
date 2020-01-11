@@ -1,26 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.dell.ui">
-<<<<<<< HEAD
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-=======
-    <uses-permission android:name="android.permission.INTERNET" />
->>>>>>> 6fec2515c9168da4c19de4beed5c7a2c00186b4b
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="CryptX"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-<<<<<<< HEAD
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-=======
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
->>>>>>> 6fec2515c9168da4c19de4beed5c7a2c00186b4b
         <activity android:name=".MainActivity">
 
         </activity>
