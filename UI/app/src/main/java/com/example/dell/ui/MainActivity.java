@@ -20,6 +20,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     RecyclerView recyclerView;
     public static final int CONNECTION_TIMEOUT = 100000;
-    public static final int READ_TIMEOUT = 15000;
+    public static final int READ_TIMEOUT = 1500000;
  private adapter mAdapter;
-
-
-
+ private List<DataFish> data;
+    JsonParser jsonParser=new JsonParser();
+    JSONObject jobj = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +60,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView=findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getBaseContext(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        new AsyncFetch().execute();
-
+        data=new ArrayList<>();
+    new AsyncFetch().execute();
+            //  loadUrl();
     }
     private class AsyncFetch extends AsyncTask<String, String, String> {
         ProgressDialog pdLoading = new ProgressDialog(MainActivity.this);
@@ -77,94 +79,135 @@ public class MainActivity extends AppCompatActivity {
             pdLoading.show();
 
         }
-
-        @Override
+@Override
         protected String doInBackground(String... params) {
-            try {
 
-                // Enter URL address where your json file resides
-                // Even you can make call to php file which returns json data
-                url = new URL("http://sih2020-cryptx.herokuapp.com/news");
 
-            } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return e.toString();
-            }
-            try {
-
-                // Setup HttpURLConnection class to send and receive data from php and mysql
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setConnectTimeout(CONNECTION_TIMEOUT);
-                conn.setRequestMethod("GET");
-
-                // setDoOutput to true as we recieve data from json file
-                conn.setDoOutput(true);
-
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-                return e1.toString();
-            }
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
 
             try {
+             url=new URL("http://sih2020-cryptx.herokuapp.com/news");
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
 
-                int response_code = conn.getResponseCode();
 
-                // Check if successful connection made
-                if (response_code == HttpURLConnection.HTTP_OK) {
+                InputStream stream = connection.getInputStream();
 
-                    // Read data sent from server
-                    InputStream input = conn.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input,"utf-8"), 8);
-                    StringBuilder result = new StringBuilder();
-                    String line;
+                reader = new BufferedReader(new InputStreamReader(stream));
 
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
+                StringBuffer buffer = new StringBuffer();
+                String line = "";
 
-                    // Pass data to onPostExecute method
-                    return (result.substring(result.indexOf("{"), result.lastIndexOf("}") + 1));
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line+"\n");
+                    Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
 
-                } else {
-
-                    return ("unsuccessful");
                 }
 
+                return buffer.toString();
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-                return e.toString();
             } finally {
-                conn.disconnect();
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+            return null;}
+//        @Override
+//        protected String doInBackground(String... params) {
 
 
-        }
+//            try {
+//
+//                // Enter URL address where your json file resides
+//                // Even you can make call to php file which returns json data
+//                url = new URL("http://sih2020-cryptx.herokuapp.com/news");
+//
+//            } catch (MalformedURLException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//                return e.toString();
+//            }
+//            try {
+//
+//                // Setup HttpURLConnection class to send and receive data from php and mysql
+//                conn = (HttpURLConnection) url.openConnection();
+//                conn.setReadTimeout(READ_TIMEOUT);
+//                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+//                conn.setRequestMethod("GET");
+//
+//                // setDoOutput to true as we recieve data from json file
+//                conn.setDoOutput(true);
+//
+//            } catch (IOException e1) {
+//                // TODO Auto-generated catch block
+//                e1.printStackTrace();
+//                return e1.toString();
+//            }
+
+//            try {
+//
+//
+//                int response_code = conn.getResponseCode();
+//
+//                // Check if successful connection made
+//                if (response_code == HttpURLConnection.HTTP_OK) {
+//
+//                    // Read data sent from server
+//                    InputStream input = conn.getInputStream();
+//                    BufferedReader reader = new BufferedReader(new InputStreamReader(input,"utf-8"), 8);
+//                    StringBuilder result = new StringBuilder();
+//                    String line;
+//
+//                    while ((line = reader.readLine()) != null) {
+//                        result.append(line);
+//                    }
+//
+//                    // Pass data to onPostExecute method
+//
+//                    return (result.toString());
+//
+//                }
+//
+//
+////                else {
+////                  //  Toast.makeText(MainActivity.this,"OK",Toast.LENGTH_LONG).show();
+////                    return ("UNSUCCESSFUL");
+////                }
+//                      return "some statement";
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                return e.toString();
+//            } finally {
+//                conn.disconnect();
+//            }
+//
+//
+//        }
 
         @Override
         protected void onPostExecute(String s) {
-
-            pdLoading.dismiss();
+             pdLoading.dismiss();
             List<DataFish> data=new ArrayList<>();
-
             pdLoading.dismiss();
 
         try{
-//           JSONArray jArray = new JSONArray(s.toString());
-//            JSONArray jArray = (JSONArray)s.toString()
 
-            //  JSONObject responseJSonObj = new JSONObject( URLDecoder.decode( s, "UTF-8" ) );
-            JSONArray jArray = null;
+            JSONArray jArray = new JSONArray(s);
+    //        Log.w("err",jArray)
 
-           // String jsonObjRecv = JSONGet.getJSONfromURL(URL_LIST);
-            if(!TextUtils.isEmpty(s)){
-                jArray = new JSONArray(s);
-            }
-            else{
-                Log.w("json", "jsonObjRecv is null");
-            }
 
 
             for(int i=0;i<jArray.length();i++){
@@ -177,6 +220,8 @@ public class MainActivity extends AppCompatActivity {
                 fishData.date=json_data.getString("publishedAt");
                 fishData.author=json_data.getString("author");
                 fishData.content=json_data.getString("content");
+                   Log.w("error",fishData.title);
+                   data.add(fishData);
             }
             recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
             mAdapter = new adapter(data,MainActivity.this);
@@ -186,11 +231,16 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
         }
-    }}
+    }}}
 //    private void loadUrl(){
 //        final TextView t = findViewById(R.id.txt);
 //        RequestQueue queue = Volley.newRequestQueue(this);
+//        final List<DataFish> data=new ArrayList<>();
+//
+//
 //        String url ="http://sih2020-cryptx.herokuapp.com/news";
+//
+//
 //        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET,url,null,
 //                new Response.Listener<JSONObject>(){
 //                    @Override
@@ -201,18 +251,27 @@ public class MainActivity extends AppCompatActivity {
 //
 //                            JSONArray array = response.getJSONArray("items");
 //
-//                            for (int i = 0; i < array.length(); i++){
 //
-//                                JSONObject jo = array.getJSONObject(i);
 //
-//                                list developers = new list(jo.getString("title"), jo.getString("url"),
-//                                        jo.getString("date"),jo.getString("author"),jo.getString("content"));
-//                                developersLists.add(developers);
+//                            for(int i=0;i<array.length();i++){
+//                                JSONObject json_data = array.getJSONObject(i);
 //
+//
+//                                DataFish fishData = new DataFish();
+//                                fishData.title=json_data.getString("title");
+//                                fishData.url=json_data.getString("url");
+//                                fishData.date=json_data.getString("publishedAt");
+//                                fishData.author=json_data.getString("author");
+//                                fishData.content=json_data.getString("content");
+//                                //Log.w("error",fishData.title);
+//                            data.add()
 //                            }
 //
-//                            adapter = new adapter(developersLists, getApplicationContext());
-//                            recyclerView.setAdapter(adapter);
+//                            recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+//                            mAdapter=new adapter(data,MainActivity.this);
+//                            recyclerView.setAdapter(mAdapter);
+//                            recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+//
 //
 //                        } catch (JSONException e) {
 //
@@ -232,4 +291,4 @@ public class MainActivity extends AppCompatActivity {
 //        requestQueue.add(request);
 //
 //    }
-}
+//}
