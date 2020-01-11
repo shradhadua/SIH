@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
+    android:background="@drawable/border"
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp"
     >
@@ -12,7 +13,9 @@
     <LinearLayout
         android:layout_margin="8dp"
         android:id="@+id/linearLayout"
+        android:background="@drawable/imagessss"
         android:orientation="vertical"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -20,6 +23,7 @@
             android:text="Title"
             android:id="@+id/txtTitle"
             android:textSize="18sp"
+            android:padding="5sdp"
             android:textStyle="bold"
             android:textColor="#1a2080"
             android:layout_width="match_parent"
@@ -31,6 +35,7 @@
             android:textSize="12sp"
             android:textColor="#418034"
             android:textStyle="italic"
+            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -39,6 +44,7 @@
             android:id="@+id/txtPubDate"
             android:textSize="12sp"
             android:textStyle="italic"
+            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -48,6 +54,7 @@
             android:textSize="12sp"
             android:textStyle="bold"
             android:textColor="#613080"
+            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -57,6 +64,7 @@
             android:textSize="14sp"
             android:textStyle="italic"
             android:textColor="#80160e"
+            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
